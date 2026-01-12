@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>生成图标</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    canvas { border: 1px solid #ccc; margin: 10px; }
+    .download-link { margin: 10px; display: inline-block; }
+  </style>
+</head>
+<body>
+  <h1>生成扩展图标</h1>
+  <p>右键点击图片另存为对应的文件名</p>
+
+  <div id="icons"></div>
+
+  <script>
+    const sizes = [16, 32, 48, 128];
+    const container = document.getElementById('icons');
+
+    sizes.forEach(size => {
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+
+      // 绘制圆形背景
+      const gradient = ctx.createLinearGradient(0, 0, size, size);
+      gradient.addColorStop(0, '#3b82f6');
+      gradient.addColorStop(1, '#1d4ed8');
+
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(size/2, size/2, size/2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 绘制消息图标
+      ctx.strokeStyle = 'white';
+      ctx.fillStyle = 'white';
+      ctx.lineWidth = size * 0.08;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      const padding = size * 0.25;
+      const boxWidth = size - padding * 2;
+      const boxHeight = boxWidth * 0.7;
+      const startX = padding;
+      const startY = padding + (boxWidth - boxHeight) / 2;
+
+      // 消息框
+      ctx.beginPath();
+      ctx.roundRect(startX, startY, boxWidth, boxHeight, size * 0.08);
+      ctx.stroke();
+
+      // 消息线条
+      const lineY = startY + boxHeight * 0.4;
+      ctx.beginPath();
+      ctx.moveTo(startX + boxWidth * 0.2, lineY);
+      ctx.lineTo(startX + boxWidth * 0.8, lineY);
+      ctx.stroke();
+
+      // 添加到页面
+      const wrapper = document.createElement('div');
+      wrapper.style.display = 'inline-block';
+      wrapper.style.textAlign = 'center';
+
+      const label = document.createElement('p');
+      label.textContent = `icon${size}.png (${size}x${size})`;
+
+      wrapper.appendChild(canvas);
+      wrapper.appendChild(label);
+
+      // 下载链接
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL('image/png');
+      link.download = `icon${size}.png`;
+      link.textContent = '下载';
+      link.className = 'download-link';
+      wrapper.appendChild(link);
+
+      container.appendChild(wrapper);
+    });
+  </script>
+</body>
+</html>

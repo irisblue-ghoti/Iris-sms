@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String    @map("password_hash")
+  balance       Decimal   @default(0) @db.Decimal(10, 2)
+  emailVerified DateTime? @map("email_verified")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  rechargeOrders RechargeOrder[]
+  smsOrders      SmsOrder[]
+  verifyTokens   VerifyToken[]
+  usedCardCodes  CardCode[]
+
+  @@map("users")
+}
+
+model VerifyToken {
+  id        String   @id @default(cuid())
+  userId    String?  @map("user_id")
+  email     String?  // For registration codes before user exists
+  token     String   @unique
+  type      String   // email_verify, password_reset, register_code
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("verify_tokens")
+}
+
+model RechargeOrder {
+  id            String    @id @default(cuid())
+  userId        String    @map("user_id")
+  orderNo       String    @unique @map("order_no")
+  amount        Decimal   @db.Decimal(10, 2)
+  paymentMethod String    @map("payment_method") // alipay, wechat, usdt
+  status        String    @default("pending") // pending, paid, failed, expired
+  txHash        String?   @map("tx_hash") // USDT交易hash
+  callbackData  String?   @map("callback_data") // 回调原始数据
+  createdAt     DateTime  @default(now()) @map("created_at")
+  paidAt        DateTime? @map("paid_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("recharge_orders")
+}
+
+model SmsOrder {
+  id          String    @id @default(cuid())
+  userId      String    @map("user_id")
+  orderNo     String    @unique @map("order_no")
+  country     String
+  countryName String?   @map("country_name")
+  countryCode String?   @map("country_code") // 国家区号，如 +86
+  service     String
+  serviceName String    @map("service_name")
+  phoneNumber String?   @map("phone_number")
+  cost        Decimal   @db.Decimal(10, 2)
+  isPaid      Boolean   @default(false) @map("is_paid") // 是否已扣费
+  status      String    @default("pending") // pending, active, completed, cancelled, expired
+  tigerId     String?   @map("tiger_id") // Tiger SMS返回的ID
+  note        String?   // 用户备注，如密码
+  createdAt   DateTime  @default(now()) @map("created_at")
+  expiredAt   DateTime? @map("expired_at")
+
+  user     User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages SmsMessage[]
+
+  @@map("sms_orders")
+}
+
+model SmsMessage {
+  id         String   @id @default(cuid())
+  smsOrderId String   @map("sms_order_id")
+  content    String
+  code       String?  // 提取的验证码
+  receivedAt DateTime @default(now()) @map("received_at")
+
+  smsOrder SmsOrder @relation(fields: [smsOrderId], references: [id], onDelete: Cascade)
+
+  @@map("sms_messages")
+}
+
+model Service {
+  id             String   @id @default(cuid())
+  country        String
+  countryName    String   @map("country_name")
+  serviceCode    String   @map("service_code")
+  serviceName    String   @map("service_name")
+  price          Decimal  @db.Decimal(10, 2)
+  availableCount Int      @default(0) @map("available_count")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@unique([country, serviceCode])
+  @@map("services")
+}
+
+// 卡密表
+model CardCode {
+  id         String    @id @default(cuid())
+  code       String    @unique // 卡密码
+  amount     Decimal   @db.Decimal(10, 2) // 面值
+  status     String    @default("unused") // unused, used, disabled
+  usedBy     String?   @map("used_by") // 使用者ID
+  usedAt     DateTime? @map("used_at") // 使用时间
+  createdAt  DateTime  @default(now()) @map("created_at")
+  createdBy  String    @default("admin") @map("created_by") // 创建者
+
+  user User? @relation(fields: [usedBy], references: [id])
+
+  @@map("card_codes")
+}

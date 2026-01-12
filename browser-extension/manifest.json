@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "IrisSMS",
+  "version": "1.0.1",
+  "description": "快速获取短信验证码，支持全球100+国家。在任何网页轻松接收验证码。",
+  "permissions": [
+    "storage",
+    "sidePanel",
+    "activeTab",
+    "clipboardWrite",
+    "cookies"
+  ],
+  "host_permissions": [
+    "http://localhost:3000/*",
+    "http://127.0.0.1:3000/*",
+    "https://*.vercel.app/*"
+  ],
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "IrisSMS - 点击打开",
+    "default_popup": "src/popup.html"
+  },
+  "side_panel": {
+    "default_path": "src/sidepanel.html"
+  },
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content.js"],
+      "css": ["src/content.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "minimum_chrome_version": "114"
+}
