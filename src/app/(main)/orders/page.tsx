@@ -107,9 +107,9 @@ export default function OrdersPage() {
   }
 
   // Get the dial code for a country and strip the phone number
-  function getPhoneNumberWithoutDialCode(phoneNumber: string, country: string, countryCode: string): string {
-    // countryCode is already the dial code like "+351", or use country ID to look up
-    const dialCode = countryCode || getDialCode(country);
+  function getPhoneNumberWithoutDialCode(phoneNumber: string, country: string): string {
+    // 始终使用动态查找的区号，修复旧订单区号错误的问题
+    const dialCode = getDialCode(country);
     if (!dialCode) return phoneNumber;
 
     // Remove the + from dial code to get the prefix
@@ -122,9 +122,9 @@ export default function OrdersPage() {
     return phoneNumber;
   }
 
-  // Get display dial code
-  function getDisplayDialCode(country: string, countryCode: string): string {
-    return countryCode || getDialCode(country) || "";
+  // Get display dial code - 始终使用动态查找
+  function getDisplayDialCode(country: string): string {
+    return getDialCode(country) || "";
   }
 
   function getStatusBadge(status: string) {
@@ -275,11 +275,11 @@ export default function OrdersPage() {
                           <div className="flex items-center gap-2">
                             <Phone className="h-4 w-4 text-primary" />
                             <span className="text-sm text-muted-foreground">
-                              {order.countryName} {getDisplayDialCode(order.country, order.countryCode)}
+                              {order.countryName} {getDisplayDialCode(order.country)}
                             </span>
                             <span className="font-mono">
                               {order.phoneNumber
-                                ? getPhoneNumberWithoutDialCode(order.phoneNumber, order.country, order.countryCode)
+                                ? getPhoneNumberWithoutDialCode(order.phoneNumber, order.country)
                                 : t("orders.pending")}
                             </span>
                             {order.phoneNumber && (
@@ -289,7 +289,7 @@ export default function OrdersPage() {
                                 className="h-6 w-6"
                                 onClick={() =>
                                   copyToClipboard(
-                                    getPhoneNumberWithoutDialCode(order.phoneNumber!, order.country, order.countryCode)
+                                    getPhoneNumberWithoutDialCode(order.phoneNumber!, order.country)
                                   )
                                 }
                               >

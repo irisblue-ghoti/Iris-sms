@@ -84,6 +84,6 @@ chrome.action.onClicked.addListener(async (tab) => {
   } catch (error) {
     console.error('打开侧边栏失败:', error);
     // 如果失败，打开网页版
-    chrome.tabs.create({ url: 'http://localhost:3000' });
+    chrome.tabs.create({ url: 'https://iris-sms.vercel.app' });
   }
 });

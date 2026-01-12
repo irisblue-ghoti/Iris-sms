@@ -45,6 +45,12 @@ export async function POST(request: Request) {
     // 获取号码
     const numberResult = await tigerSms.getNumber(service, country);
     if ("error" in numberResult) {
+      // 处理没有号码的情况，给出友好提示
+      if (numberResult.error === "NO_NUMBERS") {
+        return NextResponse.json({
+          error: "暂时没有号码，请稍后再试或者换一个地区"
+        }, { status: 400 });
+      }
       return NextResponse.json({ error: numberResult.error }, { status: 500 });
     }
 

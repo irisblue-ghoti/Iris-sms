@@ -203,36 +203,36 @@ export default function HomePage() {
 
         <div className="container mx-auto px-4 relative">
           <div className={`text-center max-w-4xl mx-auto transition-all duration-1000 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100/80 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 text-sm font-medium mb-8 backdrop-blur-sm border border-blue-200/50 dark:border-blue-700/50">
-              <Sparkles className="h-4 w-4" />
+            <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100/80 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 text-sm font-medium mb-8 backdrop-blur-sm border border-blue-200/50 dark:border-blue-700/50 animate-bounce-slow ${mounted ? "animate-fade-in-down" : "opacity-0"}`}>
+              <Sparkles className="h-4 w-4 animate-spin-slow" />
               {t("hero.badge")}
             </div>
 
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight">
-              <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-white dark:via-gray-100 dark:to-white bg-clip-text text-transparent">
+              <span className={`inline-block bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-white dark:via-gray-100 dark:to-white bg-clip-text text-transparent ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "200ms" }}>
                 {t("hero.title1")}
               </span>
               <br />
-              <span className="bg-gradient-to-r from-blue-600 via-blue-500 to-purple-600 bg-clip-text text-transparent animate-gradient">
+              <span className={`inline-block bg-gradient-to-r from-blue-600 via-blue-500 to-purple-600 bg-clip-text text-transparent animate-gradient ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "400ms" }}>
                 {t("hero.title2")}
               </span>
             </h1>
 
-            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+            <p className={`text-xl md:text-2xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "600ms" }}>
               {t("hero.desc1")} <span className="text-blue-600 dark:text-blue-400 font-semibold">{t("hero.desc2")}</span>
               <br />
-              {t("hero.desc3")}
+              <span className="text-sm text-gray-500 dark:text-gray-500">{t("hero.desc3")}</span>
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+            <div className={`flex flex-col sm:flex-row gap-4 justify-center mb-16 ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "800ms" }}>
               <Link href="/login">
-                <Button size="lg" className="w-full sm:w-auto px-8 py-6 text-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-xl shadow-blue-500/30 hover:shadow-2xl hover:shadow-blue-500/40 transition-all duration-300 hover:-translate-y-1">
+                <Button size="lg" className="group w-full sm:w-auto px-8 py-6 text-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-xl shadow-blue-500/30 hover:shadow-2xl hover:shadow-blue-500/40 transition-all duration-300 hover:-translate-y-1 hover:scale-105">
                   {t("hero.cta1")}
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
               <Link href="/extension">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto px-8 py-6 text-lg border-2 border-gray-300 dark:border-gray-500 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-gray-700 dark:text-gray-200 hover:bg-white dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-400 transition-all duration-300 hover:-translate-y-1">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto px-8 py-6 text-lg border-2 border-gray-300 dark:border-gray-500 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-gray-700 dark:text-gray-200 hover:bg-white dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-400 transition-all duration-300 hover:-translate-y-1 hover:scale-105">
                   {t("hero.cta2")}
                 </Button>
               </Link>
@@ -246,9 +246,16 @@ export default function HomePage() {
                 { icon: MessageSquare, value: 50000, suffix: "+", label: t("stats.codes") },
                 { icon: Clock, value: 98, suffix: "%", label: t("stats.uptime") },
               ].map((stat, i) => (
-                <div key={i} className="text-center">
-                  <stat.icon className="h-6 w-6 text-blue-500 mx-auto mb-2" />
-                  <div className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
+                <div
+                  key={i}
+                  className={`text-center group cursor-default ${mounted ? "animate-fade-in-up" : "opacity-0"}`}
+                  style={{ animationDelay: `${1000 + i * 150}ms` }}
+                >
+                  <div className="relative inline-block">
+                    <stat.icon className="h-6 w-6 text-blue-500 mx-auto mb-2 transition-all duration-300 group-hover:scale-125 group-hover:text-blue-600" />
+                    <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </div>
+                  <div className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white transition-all duration-300 group-hover:scale-110">
                     {mounted && <AnimatedCounter end={stat.value} suffix={stat.suffix} />}
                   </div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">{stat.label}</div>
@@ -452,6 +459,57 @@ export default function HomePage() {
           }
         }
 
+        @keyframes fade-in-up {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fade-in-down {
+          from {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes bounce-slow {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-5px);
+          }
+        }
+
+        @keyframes spin-slow {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        @keyframes pulse-slow {
+          0%, 100% {
+            opacity: 0.3;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.6;
+            transform: scale(1.05);
+          }
+        }
+
         .animate-float {
           animation: float 20s ease-in-out infinite;
         }
@@ -463,6 +521,30 @@ export default function HomePage() {
 
         .animate-gentle-glow {
           animation: gentle-glow 4s ease-in-out infinite;
+        }
+
+        .animate-fade-in-up {
+          animation: fade-in-up 0.8s ease-out forwards;
+        }
+
+        .animate-fade-in-down {
+          animation: fade-in-down 0.6s ease-out forwards;
+        }
+
+        .animate-bounce-slow {
+          animation: bounce-slow 3s ease-in-out infinite;
+        }
+
+        .animate-spin-slow {
+          animation: spin-slow 8s linear infinite;
+        }
+
+        .animate-pulse-slow {
+          animation: pulse-slow 6s ease-in-out infinite;
+        }
+
+        .animate-float-slow {
+          animation: float 25s ease-in-out infinite;
         }
       `}</style>
     </div>

@@ -210,7 +210,7 @@ export const COUNTRIES: Array<{ id: string; name: string }> = [
 ];
 
 // 完整服务列表 (从pj.txt解析 - 常用服务)
-export const SERVICES: Array<{ code: string; name: string }> = [
+const ALL_SERVICES: Array<{ code: string; name: string }> = [
   { code: "tg", name: "Telegram" },
   { code: "wa", name: "Whatsapp" },
   { code: "wa2", name: "WhatsApp2" },
@@ -309,6 +309,31 @@ export const SERVICES: Array<{ code: string; name: string }> = [
   { code: "gs", name: "SamsungShop" },
   { code: "hw", name: "Alipay/Alibaba/1688" },
 ];
+
+// 屏蔽的国内服务列表
+const BLOCKED_SERVICES = new Set([
+  "wb",  // WeChat 微信
+  "qq",  // Tencent QQ 腾讯QQ
+  "kf",  // Weibo 微博
+  "li",  // Baidu 百度
+  "za",  // JDcom 京东
+  "qd",  // Taobao 淘宝
+  "zp",  // Pinduoduo 拼多多
+  "es",  // iQIYI 爱奇艺
+  "zs",  // Bilibili 哔哩哔哩
+  "hw",  // Alipay/Alibaba/1688 支付宝
+  "ab",  // Alibaba 阿里巴巴
+  "hx",  // AliExpress 速卖通
+  "yu",  // Xiaomi 小米
+  "lo",  // Oppo
+  "kx",  // Vivo
+  "lf",  // TikTok/Douyin 抖音
+  "vp",  // Kwai 快手
+  "ep",  // Temu
+]);
+
+// 过滤后的服务列表
+export const SERVICES = ALL_SERVICES.filter(s => !BLOCKED_SERVICES.has(s.code));
 
 // 国家ID到名称的映射
 export const COUNTRY_MAP: Record<string, string> = Object.fromEntries(

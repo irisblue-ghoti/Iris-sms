@@ -47,11 +47,23 @@ export const authOptions: NextAuthOptions = {
     error: "/login",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
         token.balance = (user as { balance?: string }).balance;
       }
+
+      // 当调用 update() 时，从数据库获取最新余额
+      if (trigger === "update" && token.id) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { balance: true },
+        });
+        if (dbUser) {
+          token.balance = dbUser.balance.toString();
+        }
+      }
+
       return token;
     },
     async session({ session, token }) {

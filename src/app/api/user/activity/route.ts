@@ -43,15 +43,33 @@ export async function GET(request: Request) {
         code: order.messages[0]?.code || null,
         createdAt: order.createdAt.toISOString(),
       })),
-      ...recentRechargeOrders.map((order) => ({
-        id: order.id,
-        type: "recharge" as const,
-        title: `充值 ¥${order.amount}`,
-        description: order.paymentMethod === "alipay" ? "支付宝" : order.paymentMethod === "wxpay" ? "微信" : "USDT",
-        status: order.status,
-        code: null,
-        createdAt: order.createdAt.toISOString(),
-      })),
+      ...recentRechargeOrders.map((order) => {
+        // 根据支付方式显示对应的文字
+        let paymentMethodText = "USDT";
+        switch (order.paymentMethod) {
+          case "alipay":
+            paymentMethodText = "支付宝";
+            break;
+          case "wxpay":
+            paymentMethodText = "微信";
+            break;
+          case "card_code":
+            paymentMethodText = "卡密";
+            break;
+          case "usdt":
+            paymentMethodText = "USDT";
+            break;
+        }
+        return {
+          id: order.id,
+          type: "recharge" as const,
+          title: `充值 ¥${order.amount}`,
+          description: paymentMethodText,
+          status: order.status,
+          code: null,
+          createdAt: order.createdAt.toISOString(),
+        };
+      }),
     ]
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       .slice(0, 10);

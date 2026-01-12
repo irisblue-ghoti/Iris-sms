@@ -17,12 +17,12 @@ const translations: Record<Language, Record<string, string>> = {
     "header.register": "Free Register",
 
     // Hero
-    "hero.badge": "Global Leading SMS Verification Platform",
-    "hero.title1": "Global SMS",
-    "hero.title2": "Smart Verification Service",
+    "hero.badge": "International SMS Verification Platform",
+    "hero.title1": "International SMS",
+    "hero.title2": "Verification Service",
     "hero.desc1": "Support phone numbers from",
     "hero.desc2": "100+ countries worldwide",
-    "hero.desc3": "Receive verification codes from various apps quickly and securely",
+    "hero.desc3": "For overseas platforms only. Domestic Chinese platforms are not supported.",
     "hero.cta1": "Get Started",
     "hero.cta2": "Download Browser Extension",
 
@@ -179,6 +179,9 @@ const translations: Record<Language, Record<string, string>> = {
     "common.balance": "Balance",
     "common.search": "Search...",
     "common.noResults": "No results found",
+    "common.hour": "h ",
+    "common.minute": "m ",
+    "common.second": "s",
 
     // Recharge Page
     "recharge.title": "Recharge",
@@ -244,6 +247,7 @@ const translations: Record<Language, Record<string, string>> = {
     "services.verificationCode": "Verification Code",
     "services.checkCode": "Check Code",
     "services.cancel": "Cancel",
+    "services.expired": "Expired",
     "services.success": "Success",
     "services.number": "Number",
     "services.failed": "Failed",
@@ -264,12 +268,12 @@ const translations: Record<Language, Record<string, string>> = {
     "header.register": "免费注册",
 
     // Hero
-    "hero.badge": "全球领先的短信接码服务平台",
-    "hero.title1": "全球短信",
-    "hero.title2": "智能接码服务",
+    "hero.badge": "国际短信验证平台",
+    "hero.title1": "国际短信",
+    "hero.title2": "验证码服务",
     "hero.desc1": "支持全球",
     "hero.desc2": "100+ 国家手机号",
-    "hero.desc3": "快速接收各类 APP 验证码，安全稳定",
+    "hero.desc3": "仅支持海外平台，不支持国内平台",
     "hero.cta1": "立即开始使用",
     "hero.cta2": "下载浏览器扩展",
 
@@ -426,6 +430,9 @@ const translations: Record<Language, Record<string, string>> = {
     "common.balance": "余额",
     "common.search": "搜索...",
     "common.noResults": "无搜索结果",
+    "common.hour": "小时",
+    "common.minute": "分",
+    "common.second": "秒",
 
     // Recharge Page
     "recharge.title": "充值",
@@ -491,6 +498,7 @@ const translations: Record<Language, Record<string, string>> = {
     "services.verificationCode": "验证码",
     "services.checkCode": "查看验证码",
     "services.cancel": "取消",
+    "services.expired": "已过期",
     "services.success": "成功",
     "services.number": "号码",
     "services.failed": "失败",

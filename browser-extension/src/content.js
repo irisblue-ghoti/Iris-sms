@@ -6,7 +6,7 @@
     try {
       // 获取当前API地址
       const result = await chrome.storage.local.get(['apiBase']);
-      const apiBase = result.apiBase || 'http://localhost:3000';
+      const apiBase = result.apiBase || 'https://iris-sms.vercel.app';
 
       // 检查当前页面是否是平台页面
       if (!window.location.origin.includes(new URL(apiBase).host) &&

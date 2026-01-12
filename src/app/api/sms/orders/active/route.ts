@@ -53,6 +53,7 @@ export async function GET(request: Request) {
           note: order.note || null,
           cost: order.cost,
           createdAt: order.createdAt.toISOString(),
+          expiredAt: order.expiredAt?.toISOString() || new Date(order.createdAt.getTime() + 20 * 60 * 1000).toISOString(),
         };
       }),
     });

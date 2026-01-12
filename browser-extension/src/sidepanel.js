@@ -1,7 +1,7 @@
 // IrisSMS Side Panel Script with i18n and theme support
 
 // Default API address
-const DEFAULT_API_BASE = 'http://localhost:3000';
+const DEFAULT_API_BASE = 'https://iris-sms.vercel.app';
 let API_BASE = DEFAULT_API_BASE;
 
 // State

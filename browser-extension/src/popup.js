@@ -1,6 +1,6 @@
 // popup.js - Wallet style popup script with i18n and theme support
 
-const DEFAULT_API_BASE = 'http://localhost:3000';
+const DEFAULT_API_BASE = 'https://iris-sms.vercel.app';
 let API_BASE = DEFAULT_API_BASE;
 let session = null;
 let currentLang = 'en';

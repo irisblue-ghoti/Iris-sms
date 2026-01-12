@@ -6,9 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { SearchableSelect } from "@/components/ui/searchable-select";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Phone, Copy, RefreshCw } from "lucide-react";
+import { Loader2, Phone, Copy, RefreshCw, Clock } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
 import { useCurrency } from "@/lib/currency-context";
+import { getDialCode } from "@/lib/country-codes";
 
 interface Country {
   id: string;
@@ -39,6 +40,7 @@ interface ActiveOrder {
   message: string | null;
   cost: number;
   createdAt: string;
+  expiredAt: string;
 }
 
 export default function ServicesPage() {
@@ -54,7 +56,35 @@ export default function ServicesPage() {
   const [loading, setLoading] = useState(false);
   const [priceLoading, setPriceLoading] = useState(false);
   const [activeOrders, setActiveOrders] = useState<ActiveOrder[]>([]);
+  const [, setTick] = useState(0); // 用于触发时间更新
   const { toast } = useToast();
+
+  // 格式化剩余时间
+  function formatRemainingTime(expiredAt: string): { text: string; isExpiring: boolean; isExpired: boolean } {
+    const now = new Date();
+    const expired = new Date(expiredAt);
+    const diffMs = expired.getTime() - now.getTime();
+
+    if (diffMs <= 0) {
+      return { text: t("services.expired"), isExpiring: false, isExpired: true };
+    }
+
+    const diffSec = Math.floor(diffMs / 1000);
+    const diffMin = Math.floor(diffSec / 60);
+    const remainingSec = diffSec % 60;
+
+    const isExpiring = diffMin < 5; // 少于5分钟时警告
+    const text = `${diffMin}:${remainingSec.toString().padStart(2, '0')}`;
+
+    return { text, isExpiring, isExpired: false };
+  }
+
+  // 每秒更新时间显示
+  useEffect(() => {
+    if (activeOrders.length === 0) return;
+    const timer = setInterval(() => setTick(t => t + 1), 1000);
+    return () => clearInterval(timer);
+  }, [activeOrders.length]);
 
   // Load countries and services
   useEffect(() => {
@@ -273,6 +303,21 @@ export default function ServicesPage() {
     }
   }
 
+  // Strip dial code prefix from phone number for display
+  function getPhoneNumberWithoutDialCode(phoneNumber: string, country: string): string {
+    const dialCode = getDialCode(country);
+    if (!dialCode) return phoneNumber;
+
+    // Remove the + from dial code to get the prefix
+    const prefix = dialCode.replace("+", "");
+
+    // If phone number starts with the prefix, remove it
+    if (phoneNumber.startsWith(prefix)) {
+      return phoneNumber.substring(prefix.length);
+    }
+    return phoneNumber;
+  }
+
   // Copy to clipboard
   function copyToClipboard(text: string) {
     navigator.clipboard.writeText(text);
@@ -388,13 +433,13 @@ export default function ServicesPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Phone className="h-4 w-4 text-primary" />
-                      <span className="text-muted-foreground font-mono">{order.countryCode}</span>
-                      <span className="font-mono text-lg font-semibold">{order.phone}</span>
+                      <span className="text-muted-foreground font-mono">{getDialCode(order.country)}</span>
+                      <span className="font-mono text-lg font-semibold">{getPhoneNumberWithoutDialCode(order.phone, order.country)}</span>
                       <Button
                         variant="ghost"
                         size="icon"
                         className="h-6 w-6"
-                        onClick={() => copyToClipboard(order.countryCode + order.phone)}
+                        onClick={() => copyToClipboard(getDialCode(order.country) + getPhoneNumberWithoutDialCode(order.phone, order.country))}
                       >
                         <Copy className="h-3 w-3" />
                       </Button>
@@ -408,8 +453,23 @@ export default function ServicesPage() {
                     </span>
                   </div>
 
-                  <div className="text-sm text-muted-foreground">
-                    {t("services.service")}: {order.service} | {t("services.country")}: {order.countryName}
+                  <div className="text-sm text-muted-foreground flex items-center justify-between">
+                    <span>{t("services.service")}: {order.service} | {t("services.country")}: {order.countryName}</span>
+                    {order.status !== "received" && (() => {
+                      const remaining = formatRemainingTime(order.expiredAt);
+                      return (
+                        <span className={`flex items-center gap-1 font-mono ${
+                          remaining.isExpired
+                            ? "text-red-600 dark:text-red-400"
+                            : remaining.isExpiring
+                              ? "text-orange-600 dark:text-orange-400"
+                              : "text-muted-foreground"
+                        }`}>
+                          <Clock className="h-3.5 w-3.5" />
+                          {remaining.text}
+                        </span>
+                      );
+                    })()}
                   </div>
 
                   {order.code && (
